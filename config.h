@@ -31,6 +31,7 @@ static const Rule rules[] = {
 	{ "mpv",      NULL,       NULL,       0,            1,           -1 },
 	{ "ncmpcpp",  NULL,       NULL,       1 << 8,       0,            1 },
 	{ "Signal",   NULL,       NULL,       1 << 8,       0,            1 },
+	{ "Steam",    NULL,       NULL,       1 << 7,       0,            1 },
 };
 
 /* layout(s) */
