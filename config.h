@@ -27,12 +27,12 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "discord",  NULL,       NULL,       1 << 8,       0,            1 },
+	{ "discord",  NULL,       NULL,       0,            0,            1 },
 	{ "mpv",      NULL,       NULL,       0,            1,           -1 },
-	{ "ncmpcpp",  NULL,       NULL,       1 << 8,       0,            1 },
-	{ "Signal",   NULL,       NULL,       1 << 8,       0,            1 },
+	{ "ncmpcpp",  NULL,       NULL,       0,            0,            1 },
+	{ "Signal",   NULL,       NULL,       0,            0,            1 },
 	{ "Steam",    NULL,       NULL,       1 << 1,       0,            0 },
-	{ "steam_app_1172470",    NULL, NULL, 1 << 0,       0,            0 },
+	{ "steam_app_1172470",    NULL, NULL, 0,            0,            0 },
 };
 
 /* layout(s) */
