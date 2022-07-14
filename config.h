@@ -18,6 +18,24 @@ static const char *colors[][3]      = {
 	[SchemeSel]  = { col_gray1, col_mauve,  col_mauve  },
 };
 
+typedef struct {
+	const char *name;
+	const void *cmd;
+} Sp;
+const char *spcmd0[] = {"st", "-c", "spterm", "-g", "120x34", NULL };
+const char *spcmd1[] = {"st", "-c", "spfm", "-g", "144x41", "-e", "lf", NULL };
+const char *spcmd2[] = {"st", "-c", "spncmpcpp", "-g", "144x41", "-e", "ncmpcpp", NULL };
+const char *spcmd3[] = {"st", "-c", "spplex-mpv-shim", "-g", "144x41", "-e", "plex-mpv-shim", NULL };
+const char *spcmd4[] = {"keepassxc", NULL };
+static Sp scratchpads[] = {
+	/* name          cmd  */
+	{"spterm",	spcmd0},
+	{"spfm",	spcmd1},
+	{"spncmpcpp",	spcmd2},
+	{"plex-mpv-shim",	spcmd3},
+	{"keepassxc",	spcmd4},
+};
+
 /* tagging */
 static const char *tags[] = { "一", "二", "三", "四", "五", "六", "七", "八", "九" };
 
@@ -30,10 +48,15 @@ static const Rule rules[] = {
 	{ "discord",  NULL,       NULL,       1 << 0,       0,            1 },
 	{ "Element",  NULL,       NULL,       1 << 0,       0,            1 },
 	{ "mpv",      NULL,       NULL,       0,            1,           -1 },
-	{ "ncmpcpp",  NULL,       NULL,       1 << 0,       0,            1 },
+	/* { "ncmpcpp",  NULL,       NULL,       1 << 0,       0,            1 }, */
 	{ "Signal",   NULL,       NULL,       1 << 0,       0,            1 },
 	{ "Steam",    NULL,       NULL,       1 << 1,       0,            0 },
 	{ "steam_app_1172470",    NULL, NULL, 0,            0,            0 },
+	{ "spterm",   NULL,       NULL,       SPTAG(0),     1,           -1 },
+	{ "spfm",     NULL,       NULL,       SPTAG(1),     1,           -1 },
+	{ "spncmpcpp",NULL,       NULL,       SPTAG(2),     1,           -1 },
+	{ "spplex-mpv-shim",NULL, NULL,       SPTAG(3),     1,           -1 },
+	{ "KeePassXC",NULL,       NULL,       SPTAG(4),     1,           -1 },
 };
 
 /* layout(s) */
@@ -90,6 +113,11 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY,            		XK_y,  	   togglescratch,  {.ui = 0 } },
+	{ MODKEY,            		XK_u,	   togglescratch,  {.ui = 1 } },
+	{ MODKEY,            		XK_s,	   togglescratch,  {.ui = 2 } },
+	{ MODKEY,            		XK_p,	   togglescratch,  {.ui = 3 } },
+	{ MODKEY,            		XK_x,	   togglescratch,  {.ui = 3 } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -113,6 +141,7 @@ static Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
+	/* { ClkClientWin,         MODKEY,         Button1,        resizemouse,    {0} }, */
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
