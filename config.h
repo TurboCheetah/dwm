@@ -25,12 +25,10 @@ typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd0[] = {"st", "-c", "spterm", "-g", "120x34", NULL};
-const char *spcmd1[] = {"st", "-c", "spfm", "-g", "144x41", "-e", "lf", NULL};
-const char *spcmd2[] = {"st",     "-c", "spncmpcpp", "-g",
-                        "144x41", "-e", "ncmpcpp",   NULL};
-const char *spcmd3[] = {"st",     "-c", "spplex-mpv-shim", "-g",
-                        "144x41", "-e", "plex-mpv-shim",   NULL};
+const char *spcmd0[] = {"alacritty", "--class", "spterm", "-o", "window.dimensions.columns=120", "-o", "window.dimensions.lines=34", NULL};
+const char *spcmd1[] = {"alacritty", "--class", "spfm", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "lf", NULL};
+const char *spcmd2[] = {"alacritty", "--class", "spncmpcpp", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "ncmpcpp",   NULL};
+const char *spcmd3[] = {"alacritty", "--class", "spplex-mpv-shim", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "plex-mpv-shim",   NULL};
 const char *spcmd4[] = {"keepassxc", NULL};
 static Sp scratchpads[] = {
     /* name          cmd  */
@@ -64,7 +62,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact = 0.55; /* factor of master area size [0.05..0.95] */
+static const float mfact = 0.70; /* factor of master area size [0.05..0.95] */
 static const int nmaster = 1;    /* number of clients in master area */
 static const int resizehints =
     1; /* 1 means respect size hints in tiled resizals */
@@ -98,7 +96,7 @@ static char dmenumon[2] =
 static const char *dmenucmd[] = {
     "dmenu_run", "-m",  dmenumon,  "-fn", dmenufont, "-nb", col_gray1, "-nf",
     col_gray3,   "-sb", col_mauve, "-sf", col_gray4, NULL};
-static const char *termcmd[] = {"st", NULL};
+static const char *termcmd[] = {"alacritty", NULL};
 
 static Key keys[] = {
     /* modifier                     key        function        argument */
