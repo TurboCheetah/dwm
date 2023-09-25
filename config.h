@@ -26,14 +26,14 @@ typedef struct {
   const void *cmd;
 } Sp;
 const char *spcmd0[] = {"alacritty", "--class", "spterm", "-o", "window.dimensions.columns=120", "-o", "window.dimensions.lines=34", NULL};
-const char *spcmd1[] = {"alacritty", "--class", "spfm", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "lf", NULL};
+const char *spcmd1[] = {"alacritty", "--class", "spfm", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "ranger", NULL};
 const char *spcmd2[] = {"alacritty", "--class", "spncmpcpp", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "ncmpcpp",   NULL};
 const char *spcmd3[] = {"alacritty", "--class", "spplex-mpv-shim", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "plex-mpv-shim",   NULL};
-const char *spcmd4[] = {"keepassxc", NULL};
+const char *spcmd4[] = {"bitwarden", NULL};
 static Sp scratchpads[] = {
     /* name          cmd  */
     {"spterm", spcmd0},        {"spfm", spcmd1},      {"spncmpcpp", spcmd2},
-    {"plex-mpv-shim", spcmd3}, {"keepassxc", spcmd4},
+    {"plex-mpv-shim", spcmd3}, {"bitwarden", spcmd4},
 };
 
 /* tagging */
@@ -58,7 +58,8 @@ static const Rule rules[] = {
     {"spfm", NULL, NULL, SPTAG(1), 1, -1},
     {"spncmpcpp", NULL, NULL, SPTAG(2), 1, -1},
     {"spplex-mpv-shim", NULL, NULL, SPTAG(3), 1, -1},
-    {"KeePassXC", NULL, NULL, SPTAG(4), 1, -1},
+    // {"KeePassXC", NULL, NULL, SPTAG(4), 1, -1},
+    {"Bitwarden", NULL, NULL, SPTAG(4), 1, -1},
 };
 
 /* layout(s) */
