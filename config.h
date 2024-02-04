@@ -6,10 +6,10 @@ static const unsigned int snap = 32;    /* snap pixel */
 static const int showbar = 1;           /* 0 means no bar */
 static const int topbar = 1;            /* 0 means bottom bar */
 static const char *fonts[] = {
-    "SauceCodePro Nerd Font Mono:size=10:antialias=true:autohint:true",
+    "Iosevka Nerd Font Mono:size=10:antialias=true:autohint:true",
     "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true"};
 static const char dmenufont[] =
-    "SauceCodePro Nerd Font Mono:size=10:antialias=true:autohint:true";
+    "Iosevka Nerd Font Mono:size=10:antialias=true:autohint:true";
 static const char col_gray1[] = "#181825";
 static const char col_gray2[] = "#181825";
 static const char col_gray3[] = "#cdd6f4";
@@ -25,10 +25,10 @@ typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd0[] = {"alacritty", "--class", "spterm", "-o", "window.dimensions.columns=120", "-o", "window.dimensions.lines=34", NULL};
-const char *spcmd1[] = {"alacritty", "--class", "spfm", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "ranger", NULL};
-const char *spcmd2[] = {"alacritty", "--class", "spncmpcpp", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "ncmpcpp",   NULL};
-const char *spcmd3[] = {"alacritty", "--class", "spplex-mpv-shim", "-o", "window.dimensions.columns=144", "-o", "window.dimensions.lines=41", "-e", "plex-mpv-shim",   NULL};
+const char *spcmd0[] = {"kitty", "--class", "spterm", "-o", "initial_window_width=160c", "-o", "initial_window_height=34c", NULL};
+const char *spcmd1[] = {"kitty", "--class", "spfm", "-o", "initial_window_width=184c", "-o", "initial_window_height=40c", "ranger", NULL};
+const char *spcmd2[] = {"kitty", "--class", "spncmpcpp", "-o", "initial_window_width=184c", "-o", "initial_window_height=40c", "ncmpcpp",   NULL};
+const char *spcmd3[] = {"kitty", "--class", "spplex-mpv-shim", "-o", "initial_window_width=184c", "-o", "initial_window_height=40c", "plex-mpv-shim",   NULL};
 const char *spcmd4[] = {"bitwarden", NULL};
 static Sp scratchpads[] = {
     /* name          cmd  */
@@ -37,8 +37,7 @@ static Sp scratchpads[] = {
 };
 
 /* tagging */
-static const char *tags[] = {"一", "二", "三", "四", "五",
-                             "六", "七", "八", "九"};
+static const char *tags[] = {"一", "二", "三", "四", "五", "六", "七", "八", "九"};
 
 static const Rule rules[] = {
     /* xprop(1):
@@ -46,7 +45,7 @@ static const Rule rules[] = {
      *	WM_NAME(STRING) = title
      */
     /* class      instance    title       tags mask     isfloating   monitor */
-    {"discord", NULL, NULL, 1 << 8, 0, 0},
+    {"vesktop", NULL, NULL, 1 << 8, 0, 0},
     {"Element", NULL, NULL, 1 << 0, 0, 1},
     {"mpv", NULL, NULL, 0, 1, -1},
     /* { "ncmpcpp",  NULL,       NULL,       1 << 0,       0,            1 }, */
@@ -63,7 +62,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact = 0.70; /* factor of master area size [0.05..0.95] */
+static const float mfact = 0.65; /* factor of master area size [0.05..0.95] */
 static const int nmaster = 1;    /* number of clients in master area */
 static const int resizehints =
     1; /* 1 means respect size hints in tiled resizals */
@@ -97,7 +96,7 @@ static char dmenumon[2] =
 static const char *dmenucmd[] = {
     "dmenu_run", "-m",  dmenumon,  "-fn", dmenufont, "-nb", col_gray1, "-nf",
     col_gray3,   "-sb", col_mauve, "-sf", col_gray4, NULL};
-static const char *termcmd[] = {"alacritty", NULL};
+static const char *termcmd[] = {"kitty", NULL};
 
 static Key keys[] = {
     /* modifier                     key        function        argument */
