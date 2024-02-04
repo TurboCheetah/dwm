@@ -1,0 +1,11 @@
+--- a/dwm.c	2023-10-08 10:49:56.024886403 -0500
++++ b/dwm.c	2023-12-18 12:21:16.110994550 -0500
+@@ -1573,7 +1573,7 @@
+ 	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
+ 		die("no fonts could be loaded.");
+ 	lrpad = drw->fonts->h;
+-	bh = drw->fonts->h + 2;
++	bh = drw->fonts->h;
+ 	updategeom();
+ 	/* init atoms */
+ 	utf8string = XInternAtom(dpy, "UTF8_STRING", False);
