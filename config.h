@@ -10,11 +10,11 @@ static const char *fonts[] = {
     "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true"};
 static const char dmenufont[] =
     "Iosevka Nerd Font Mono:size=10:antialias=true:autohint:true";
-static const char col_gray1[] = "#181825";
-static const char col_gray2[] = "#181825";
-static const char col_gray3[] = "#cdd6f4";
-static const char col_gray4[] = "#181825";
-static const char col_mauve[] = "#cba6f7";
+static const char col_gray1[] = "#1d2021";
+static const char col_gray2[] = "#3c3836";
+static const char col_gray3[] = "#ebdbb2";
+static const char col_gray4[] = "#282828";
+static const char col_mauve[] = "#fabd2f";
 static const char *colors[][3] = {
     /*               fg         bg         border   */
     [SchemeNorm] = {col_mauve, col_gray1, col_gray1},
@@ -25,15 +25,43 @@ typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd0[] = {"kitty", "--class", "spterm", "-o", "initial_window_width=160c", "-o", "initial_window_height=34c", NULL};
-const char *spcmd1[] = {"kitty", "--class", "spfm", "-o", "initial_window_width=184c", "-o", "initial_window_height=40c", "ranger", NULL};
-const char *spcmd2[] = {"kitty", "--class", "spncmpcpp", "-o", "initial_window_width=184c", "-o", "initial_window_height=40c", "ncmpcpp",   NULL};
-const char *spcmd3[] = {"kitty", "--class", "spplex-mpv-shim", "-o", "initial_window_width=184c", "-o", "initial_window_height=40c", "plex-mpv-shim",   NULL};
+
+const char *spcmd0[] = {
+  "ghostty", "+new-window",
+  "--class=ooo.turbo.spterm",
+  "--window-width=160", "--window-height=34",
+  NULL
+};
+
+const char *spcmd1[] = {
+  "ghostty", "+new-window",
+  "--class=ooo.turbo.spfm",
+  "--window-width=184", "--window-height=40",
+  "-e", "ranger",
+  NULL
+};
+
+const char *spcmd2[] = {
+  "ghostty", "+new-window",
+  "--class=ooo.turbo.spncmpcpp",
+  "--window-width=184", "--window-height=40",
+  "-e", "ncmpcpp",
+  NULL
+};
+
+const char *spcmd3[] = {
+  "ghostty", "+new-window",
+  "--class=ooo.turbo.spjellyfin",
+  "--window-width=184", "--window-height=40",
+  "-e", "jellyfin-mpv-shim",
+  NULL
+};
+
 const char *spcmd4[] = {"bitwarden", NULL};
+
 static Sp scratchpads[] = {
-    /* name          cmd  */
-    {"spterm", spcmd0},        {"spfm", spcmd1},      {"spncmpcpp", spcmd2},
-    {"plex-mpv-shim", spcmd3}, {"bitwarden", spcmd4},
+  {"spterm", spcmd0}, {"spfm", spcmd1}, {"spncmpcpp", spcmd2},
+  {"spjellyfin", spcmd3}, {"bitwarden", spcmd4},
 };
 
 /* tagging */
@@ -45,7 +73,7 @@ static const Rule rules[] = {
      *	WM_NAME(STRING) = title
      */
     /* class      instance    title       tags mask     isfloating   monitor */
-    {"vesktop", NULL, NULL, 1 << 8, 0, 0},
+    {"goofcord", NULL, NULL, 1 << 8, 0, 0},
     {"Element", NULL, NULL, 1 << 0, 0, 1},
     {"mpv", NULL, NULL, 0, 1, -1},
     /* { "ncmpcpp",  NULL,       NULL,       1 << 0,       0,            1 }, */
@@ -53,10 +81,10 @@ static const Rule rules[] = {
     {"Steam", NULL, NULL, 1 << 1, 0, 0},
     {"steam_app_1172470", NULL, NULL, 0, 0, 0},
     {"scrcpy", NULL, NULL, 0, 1, -1},
-    {"spterm", NULL, NULL, SPTAG(0), 1, -1},
-    {"spfm", NULL, NULL, SPTAG(1), 1, -1},
-    {"spncmpcpp", NULL, NULL, SPTAG(2), 1, -1},
-    {"spplex-mpv-shim", NULL, NULL, SPTAG(3), 1, -1},
+    {"ooo.turbo.spterm", NULL, NULL, SPTAG(0), 1, -1},
+    {"ooo.turbo.spfm", NULL, NULL, SPTAG(1), 1, -1},
+    {"ooo.turbo.spncmpcpp", NULL, NULL, SPTAG(2), 1, -1},
+    {"ooo.turbo.spjellyfin", NULL, NULL, SPTAG(3), 1, -1},
     // {"KeePassXC", NULL, NULL, SPTAG(4), 1, -1},
     {"Bitwarden", NULL, NULL, SPTAG(4), 1, -1},
 };
@@ -68,6 +96,7 @@ static const int resizehints =
     1; /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen =
     1; /* 1 will force focus on the fullscreen window */
+static const int refreshrate = 120; /* refresh rate (per second) for client move/resize */
 
 static const Layout layouts[] = {
     /* symbol     arrange function */
@@ -91,12 +120,11 @@ static const Layout layouts[] = {
   }
 
 /* commands */
-static char dmenumon[2] =
-    "0"; /* component of dmenucmd, manipulated in spawn() */
+static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = {
     "dmenu_run", "-m",  dmenumon,  "-fn", dmenufont, "-nb", col_gray1, "-nf",
     col_gray3,   "-sb", col_mauve, "-sf", col_gray4, NULL};
-static const char *termcmd[] = {"kitty", NULL};
+static const char *termcmd[] = {"ghostty", NULL};
 
 static Key keys[] = {
     /* modifier                     key        function        argument */
