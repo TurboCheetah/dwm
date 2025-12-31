@@ -1,0 +1,7 @@
+# Build artifacts
+*.o
+dwm
+dwm-*.tar.gz
+
+# Staging/temp directories
+dwm-[0-9]*/
