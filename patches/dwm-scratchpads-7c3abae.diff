@@ -1,0 +1,138 @@
+Multiple scratchpads for dwm 7c3abae (post-6.6)
+
+This patch enables multiple scratchpads, each with one assigned window.
+Ported from the original 728d397b scratchpads patch to latest upstream.
+
+--- a/config.def.h
++++ b/config.def.h
+@@ -18,9 +18,22 @@ static const char *colors[][3]      = {
+ 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+ };
+ 
++typedef struct {
++	const char *name;
++	const void *cmd;
++} Sp;
++const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
++const char *spcmd2[] = {"st", "-n", "spfm", "-g", "144x41", "-e", "ranger", NULL };
++const char *spcmd3[] = {"keepassxc", NULL };
++static Sp scratchpads[] = {
++	/* name          cmd  */
++	{"spterm",      spcmd1},
++	{"spranger",    spcmd2},
++	{"keepassxc",   spcmd3},
++};
++
+ /* tagging */
+ static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+-
+ static const Rule rules[] = {
+ 	/* xprop(1):
+ 	 *	WM_CLASS(STRING) = instance, class
+@@ -29,6 +42,9 @@ static const Rule rules[] = {
+ 	/* class      instance    title       tags mask     isfloating   monitor */
+ 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
+ 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
++	{ NULL,       "spterm",   NULL,       SPTAG(0),     1,           -1 },
++	{ NULL,       "spfm",     NULL,       SPTAG(1),     1,           -1 },
++	{ NULL,       "keepassxc",NULL,       SPTAG(2),     0,           -1 },
+ };
+ 
+ /* layout(s) */
+@@ -86,6 +102,9 @@ static const Key keys[] = {
+ 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
+ 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
+ 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
++	{ MODKEY,                       XK_y,      togglescratch,  {.ui = 0 } },
++	{ MODKEY,                       XK_u,      togglescratch,  {.ui = 1 } },
++	{ MODKEY,                       XK_x,      togglescratch,  {.ui = 2 } },
+ 	TAGKEYS(                        XK_1,                      0)
+ 	TAGKEYS(                        XK_2,                      1)
+ 	TAGKEYS(                        XK_3,                      2)
+--- a/dwm.c
++++ b/dwm.c
+@@ -53,7 +53,10 @@
+ #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
+ #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
+ #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
+-#define TAGMASK                 ((1 << LENGTH(tags)) - 1)
++#define NUMTAGS                 (LENGTH(tags) + LENGTH(scratchpads))
++#define TAGMASK                 ((1 << NUMTAGS) - 1)
++#define SPTAG(i)                ((1 << LENGTH(tags)) << (i))
++#define SPTAGMASK               (((1 << LENGTH(scratchpads))-1) << LENGTH(tags))
+ #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
+ 
+ /* enums */
+@@ -210,6 +213,7 @@ static void tagmon(const Arg *arg);
+ static void tile(Monitor *m);
+ static void togglebar(const Arg *arg);
+ static void togglefloating(const Arg *arg);
++static void togglescratch(const Arg *arg);
+ static void toggletag(const Arg *arg);
+ static void toggleview(const Arg *arg);
+ static void unfocus(Client *c, int setfocus);
+@@ -300,6 +304,11 @@ applyrules(Client *c)
+ 		{
+ 			c->isfloating = r->isfloating;
+ 			c->tags |= r->tags;
++			if ((r->tags & SPTAGMASK) && r->isfloating) {
++				c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);
++				c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);
++			}
++
+ 			for (m = mons; m && m->num != r->monitor; m = m->next);
+ 			if (m)
+ 				c->mon = m;
+@@ -309,7 +318,7 @@ applyrules(Client *c)
+ 		XFree(ch.res_class);
+ 	if (ch.res_name)
+ 		XFree(ch.res_name);
+-	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
++	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : (c->mon->tagset[c->mon->seltags] & ~SPTAGMASK);
+ }
+ 
+ int
+@@ -1633,6 +1642,10 @@ showhide(Client *c)
+ 	if (!c)
+ 		return;
+ 	if (ISVISIBLE(c)) {
++		if ((c->tags & SPTAGMASK) && c->isfloating) {
++			c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);
++			c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);
++		}
+ 		/* show clients top down */
+ 		XMoveWindow(dpy, c->win, c->x, c->y);
+ 		if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) && !c->isfullscreen)
+@@ -1737,6 +1750,32 @@ togglefloating(const Arg *arg)
+ }
+ 
+ void
++togglescratch(const Arg *arg)
++{
++	Client *c;
++	unsigned int found = 0;
++	unsigned int scratchtag = SPTAG(arg->ui);
++	Arg sparg = {.v = scratchpads[arg->ui].cmd};
++
++	for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next);
++	if (found) {
++		unsigned int newtagset = selmon->tagset[selmon->seltags] ^ scratchtag;
++		if (newtagset) {
++			selmon->tagset[selmon->seltags] = newtagset;
++			focus(NULL);
++			arrange(selmon);
++		}
++		if (ISVISIBLE(c)) {
++			focus(c);
++			restack(selmon);
++		}
++	} else {
++		selmon->tagset[selmon->seltags] |= scratchtag;
++		spawn(&sparg);
++	}
++}
++
++void
+ toggletag(const Arg *arg)
+ {
+ 	unsigned int newtags;
